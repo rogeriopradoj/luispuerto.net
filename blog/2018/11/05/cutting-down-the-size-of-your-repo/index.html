@@ -1,0 +1,1211 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.15.2 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html -->
+
+<title>Cutting ✂️ down the size of your repo | Luis Puerto</title>
+<meta name="description" content="Lately, I’ve been playing with Git and trying to fix a couple of size problem with more or less luck. Git, is a wonderful tool to track and follow changes in almost any kind of document/s or project, specially is they are plain text documents —or sort of— like any kind of source code is. Problem is, code isn’t always alone and oftentimes it goes in company with other files. Mostly binary files that the code uses or produces. Those files can still be tracked with Git, but Git usually can’t see through them since they aren’t text. So, you only know that the file has changed and you record the whole size changing1. If you have big files and / or multiple small files that change could be a problem since every time you change —or move— the file, you duplicate —more or less— the size of the file in the repo since Git is keeping a copy of the old file plus the new file.            This is not really true isfyou use some Git GUIs or Diff tools that can show you the two different versions of the file, but in the end you are going to to end with the two versions stored somewhere else. Also, depending in the type of file, Git will be able to store just the differences of the file, since it’s stored in text mode, but best practices always tell you that you shouldn’t track those files with Git, even more if your code are the one generating the file. For example, if you have a markdown code that generates a pdf file, you store and track just the markdown not the pdf. &#8617;      ">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Luis Puerto">
+<meta property="og:title" content="Cutting ✂️ down the size of your repo">
+<meta property="og:url" content="https://luispuerto.net/blog/2018/11/05/cutting-down-the-size-of-your-repo/">
+
+
+  <meta property="og:description" content="Lately, I’ve been playing with Git and trying to fix a couple of size problem with more or less luck. Git, is a wonderful tool to track and follow changes in almost any kind of document/s or project, specially is they are plain text documents —or sort of— like any kind of source code is. Problem is, code isn’t always alone and oftentimes it goes in company with other files. Mostly binary files that the code uses or produces. Those files can still be tracked with Git, but Git usually can’t see through them since they aren’t text. So, you only know that the file has changed and you record the whole size changing1. If you have big files and / or multiple small files that change could be a problem since every time you change —or move— the file, you duplicate —more or less— the size of the file in the repo since Git is keeping a copy of the old file plus the new file.            This is not really true isfyou use some Git GUIs or Diff tools that can show you the two different versions of the file, but in the end you are going to to end with the two versions stored somewhere else. Also, depending in the type of file, Git will be able to store just the differences of the file, since it’s stored in text mode, but best practices always tell you that you shouldn’t track those files with Git, even more if your code are the one generating the file. For example, if you have a markdown code that generates a pdf file, you store and track just the markdown not the pdf. &#8617;      ">
+
+
+
+  <meta property="og:image" content="https://luispuerto.net/assets/images/blog/2018/big-file.jpg">
+
+
+
+  <meta name="twitter:site" content="@lpuerto">
+  <meta name="twitter:title" content="Cutting ✂️ down the size of your repo">
+  <meta name="twitter:description" content="Lately, I’ve been playing with Git and trying to fix a couple of size problem with more or less luck. Git, is a wonderful tool to track and follow changes in almost any kind of document/s or project, specially is they are plain text documents —or sort of— like any kind of source code is. Problem is, code isn’t always alone and oftentimes it goes in company with other files. Mostly binary files that the code uses or produces. Those files can still be tracked with Git, but Git usually can’t see through them since they aren’t text. So, you only know that the file has changed and you record the whole size changing1. If you have big files and / or multiple small files that change could be a problem since every time you change —or move— the file, you duplicate —more or less— the size of the file in the repo since Git is keeping a copy of the old file plus the new file.            This is not really true isfyou use some Git GUIs or Diff tools that can show you the two different versions of the file, but in the end you are going to to end with the two versions stored somewhere else. Also, depending in the type of file, Git will be able to store just the differences of the file, since it’s stored in text mode, but best practices always tell you that you shouldn’t track those files with Git, even more if your code are the one generating the file. For example, if you have a markdown code that generates a pdf file, you store and track just the markdown not the pdf. &#8617;      ">
+  <meta name="twitter:url" content="https://luispuerto.net/blog/2018/11/05/cutting-down-the-size-of-your-repo/">
+
+  
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://luispuerto.net/assets/images/blog/2018/big-file.jpg">
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-11-05T06:30:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://luispuerto.net/blog/2018/11/05/cutting-down-the-size-of-your-repo/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://luispuerto.net",
+      "logo": "https://luispuerto.net/assets/images/pages/header-splash.jpg"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Luis Puerto",
+      "url": "https://luispuerto.net",
+      "sameAs": ["https://twitter.com/lpuerto","https://www.linkedin.com/in/lpuerto","https://github.com/luispuerto","https://www.flickr.com/photos/lpuerto"]
+    }
+  </script>
+
+
+
+  <meta name="google-site-verification" content="cZLLZlgNzUnRDZVt90lZpruDWIKI7ccL3GmK4E3hXKI" />
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Luis Puerto Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- Font Mr. Dafoe for Landing Page -->
+<link href="https://fonts.googleapis.com/css?family=Mr+Dafoe" rel="stylesheet">
+
+<!-- Mathjax to show equations from Latex code -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">Luis Puerto</a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/aboutme">About Me</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/resume">Résumé</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/blog">Blog</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/archive">Archive</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/contact">Contact</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="page__hero--overlay" style="
+          background-image:
+            url('/assets/images/blog/2018/big-file.jpg');
+          ">
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Cutting ✂️ down the size of your repo
+
+        
+      </h1>
+      
+      <!-- 
+        <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  9 minute read
+</p>
+       -->
+      
+      
+    </div>
+  
+  
+    <span class="page__hero-caption">Source: <a href="http://www.oracle-scripts.net/listener-log-too-big/">Oracle Database SQL scripts</a>
+</span>
+  
+</div>
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        
+        <a href="/aboutme/">
+          <img src="/assets/images/pages/20121231-035-ol.jpg" alt="Luis Puerto" itemprop="image">
+        </a>
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <a href="/aboutme/"><h3 class="author__name" itemprop="name">Luis Puerto</h3></a>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Born in Ponferrada, Spain. A Forest Engineer interested in Science and Technology. Fascinated about almost everything
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name"><img class="emoji" title=":eu:" alt=":eu:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1ea-1f1fa.png" height="20" width="20"><img class="emoji" title=":es:" alt=":es:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1ea-1f1f8.png" height="20" width="20"><img class="emoji" title=":sweden:" alt=":sweden:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1f8-1f1ea.png" height="20" width="20"><img class="emoji" title=":finland:" alt=":finland:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1eb-1f1ee.png" height="20" width="20"><img class="emoji" title=":us:" alt=":us:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1fa-1f1f8.png" height="20" width="20"></span>
+        </li>
+      
+
+      
+
+      
+
+      
+        
+          
+            <li><a href="/aboutme/" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-user-circle" aria-hidden="true"></i> About me</a></li>
+          
+        
+          
+            <li><a href="mailto:luis@luispuerto.net" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i> Email</a></li>
+          
+        
+          
+            <li><a href="https://twitter.com/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+          
+        
+          
+            <li><a href="https://github.com/luispuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+          
+        
+          
+            <li><a href="https://instagram.com/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Cutting ✂️ down the size of your repo">
+    <meta itemprop="description" content="Lately, I’ve been playing with Git and trying to fix a couple of size problem with more or less luck. Git, is a wonderful tool to track and follow changes in almost any kind of document/s or project, specially is they are plain text documents —or sort of— like any kind of source code is. Problem is, code isn’t always alone and oftentimes it goes in company with other files. Mostly binary files that the code uses or produces. Those files can still be tracked with Git, but Git usually can’t see through them since they aren’t text. So, you only know that the file has changed and you record the whole size changing1. If you have big files and / or multiple small files that change could be a problem since every time you change —or move— the file, you duplicate —more or less— the size of the file in the repo since Git is keeping a copy of the old file plus the new file.            This is not really true isfyou use some Git GUIs or Diff tools that can show you the two different versions of the file, but in the end you are going to to end with the two versions stored somewhere else. Also, depending in the type of file, Git will be able to store just the differences of the file, since it’s stored in text mode, but best practices always tell you that you shouldn’t track those files with Git, even more if your code are the one generating the file. For example, if you have a markdown code that generates a pdf file, you store and track just the markdown not the pdf. ↩      ">
+    <meta itemprop="datePublished" content="Monday, 05 November 2018 06:30 UTC">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      
+        <p class="page__meta page__reading_time">
+          
+          
+              <strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Posted:</strong> <time datetime="2018-11-05T06:30:00+00:00">Monday, 05 November 2018 06:30 UTC</time>
+          
+          
+        
+          <strong><i class="far fa-clock" aria-hidden="true"></i></strong> 
+
+
+
+
+  9 minute read
+
+        
+        </p>
+      
+
+        
+
+      <section class="page__content" itemprop="text">
+        
+        <div class="post__content">
+          <p>Lately, I’ve been playing with <a href="https://en.wikipedia.org/wiki/Git">Git</a> and trying to fix a couple of size problem with more or less luck. Git, is a wonderful tool to track and follow changes in almost any kind of document/s or project, specially is they are plain text documents —or sort of— like any kind of source code is. Problem is, code isn’t always alone and oftentimes it goes in company with other files. Mostly binary files that the code uses or produces. Those files can still be tracked with Git, but Git usually can’t see through them since they aren’t text. So, you only know that the file has changed and you record the whole size changing<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. If you have big files and / or multiple small files that change could be a problem since every time you change —or move— the file, you duplicate —more or less— the size of the file in the repo since Git is keeping a copy of the old file plus the new file.</p>
+
+<p>In other cases, you are a little bit clumsy or inexperience with Git —like me— and you commit files that are too big for GitHub —more that 100mb— so when you want to push the changes to GitHub you can’t.</p>
+
+<h2 id="measuring-your-repo">Measuring your repo</h2>
+
+<p>I think the first thing before we start reducing the size of our repo is measuring the real size of it and try to find out where is the problem. For that we can use a tool called <a href="https://github.com/github/git-sizer"><code class="highlighter-rouge">git-sizer</code></a> and it’s going to give us a report of why our repo is so big. To install it:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span>brew <span class="nb">install </span>git-sizer
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>Then, you go got the root of your repo and you can type:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span>git-sizer <span class="nt">--verbose</span>
+Processing blobs: 7865
+Processing trees: 7315
+Processing commits: 2974
+Matching commits to trees: 2974
+Processing annotated tags: 96
+Processing references: 115
+| Name                         | Value     | Level of concern               |
+| <span class="nt">----------------------------</span> | <span class="nt">---------</span> | <span class="nt">------------------------------</span> |
+| Overall repository size      |           |                                |
+| <span class="k">*</span> Commits                    |           |                                |
+|   <span class="k">*</span> Count                    |  2.97 k   |                                |
+|   <span class="k">*</span> Total size               |  1.16 MiB |                                |
+| <span class="k">*</span> Trees                      |           |                                |
+|   <span class="k">*</span> Count                    |  7.32 k   |                                |
+|   <span class="k">*</span> Total size               |  5.17 MiB |                                |
+|   <span class="k">*</span> Total tree entries       |   131 k   |                                |
+| <span class="k">*</span> Blobs                      |           |                                |
+|   <span class="k">*</span> Count                    |  7.87 k   |                                |
+|   <span class="k">*</span> Total size               |   281 MiB |                                |
+| <span class="k">*</span> Annotated tags             |           |                                |
+|   <span class="k">*</span> Count                    |    96     |                                |
+| <span class="k">*</span> References                 |           |                                |
+|   <span class="k">*</span> Count                    |   115     |                                |
+|                              |           |                                |
+| Biggest objects              |           |                                |
+| <span class="k">*</span> Commits                    |           |                                |
+|   <span class="k">*</span> Maximum size         <span class="o">[</span>1] |  11.2 KiB |                                |
+|   <span class="k">*</span> Maximum parents      <span class="o">[</span>2] |     2     |                                |
+| <span class="k">*</span> Trees                      |           |                                |
+|   <span class="k">*</span> Maximum entries      <span class="o">[</span>3] |   573     |                                |
+| <span class="k">*</span> Blobs                      |           |                                |
+|   <span class="k">*</span> Maximum size         <span class="o">[</span>4] |  10.4 MiB | <span class="k">*</span>                              |
+|                              |           |                                |
+| History structure            |           |                                |
+| <span class="k">*</span> Maximum <span class="nb">history </span>depth      |  1.99 k   |                                |
+| <span class="k">*</span> Maximum tag depth      <span class="o">[</span>5] |     1     |                                |
+|                              |           |                                |
+| Biggest checkouts            |           |                                |
+| <span class="k">*</span> Number of directories  <span class="o">[</span>6] |   104     |                                |
+| <span class="k">*</span> Maximum path depth     <span class="o">[</span>6] |     9     |                                |
+| <span class="k">*</span> Maximum path length    <span class="o">[</span>7] |   105 B   | <span class="k">*</span>                              |
+| <span class="k">*</span> Number of files        <span class="o">[</span>8] |  1.90 k   |                                |
+| <span class="k">*</span> Total size of files    <span class="o">[</span>8] |   177 MiB |                                |
+| <span class="k">*</span> Number of symlinks         |     0     |                                |
+| <span class="k">*</span> Number of submodules       |     0     |                                |
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>and you will get something similar to that one…</p>
+
+<p>Now, you know that the problem is your blobs most of the weight of your repo.</p>
+
+<h2 id="when-you-commit-files-too-big-for-github">When you commit files too big for GitHub</h2>
+
+<p>I think this is the most common case, when you are beginning with Git and even more with GitHub. You are happily committing your changes with Git and when you want to push them to GitHub to share your repo or to have a backup of it, you come across a message saying that some files are <em>too fat</em> for GitHub and you can’t upload.</p>
+
+<p>Well, this is more or less easy to fix and you can use two tools to do so. One is an “in house” tool that’s called <a href="https://git-scm.com/docs/git-filter-branch"><code class="highlighter-rouge">git-filter-branch</code></a>. The other one is an external tool that everybody says it’s easier to use and more effective, <a href="https://rtyley.github.io/bfg-repo-cleaner/">BFG Repo-Cleaner</a>. I decided to use the latter one since it seems simpler, faster and easy to use.</p>
+
+<p>You can find more detailed instruction in the <a href="https://rtyley.github.io/bfg-repo-cleaner/#usage">BFG Repo-Cleaner website</a>, but this is more or less what I’ve done. First, I installed the tool in my machine.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span>brew <span class="nb">install </span>bgf
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>Then… I cloned my repo, so I have a backup copy in case something go South.</p>
+
+<p class="notice--danger"><strong>Be careful:</strong> do a copy of your repo before you work with and keep that copy until you are really sure everything work as intended.</p>
+
+<p>Now, I went to root of my repo — you can also perform the command form outside— and run the following command that deleted all the blobs from the commits of my repo bigger than 100 Megabytes.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span>bfg <span class="nt">-b</span> 100M <span class="o">[</span>some-big-repo.git]
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p style="font-size: small">* You need to add the last part if you are outside the repo</p>
+
+<p>BFG doens’t really delete the blobs from the repo, just from the commits. So after I ran BFG I need to do <em>housekeeping</em> in the repo with the following commands.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span>git reflog expire <span class="nt">--expire</span><span class="o">=</span>now <span class="nt">--all</span> <span class="o">&amp;&amp;</span> git gc <span class="nt">--prune</span><span class="o">=</span>now <span class="nt">--aggressive</span>
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p><a href="https://git-scm.com/docs/git-reflog"><code class="highlighter-rouge">reflog</code></a> command manage the references log and <a href="https://git-scm.com/docs/git-gc"><code class="highlighter-rouge">gc</code></a> clean your repo of unnecessary stuff —garbage collector.</p>
+
+<p>Now, is when I noticed the decrease in size in the repo and I can push changes. However, we have to take into account a <em>couple</em> of things before pushing.</p>
+
+<ul>
+  <li>If you have follow the BFG website steps you probably have cloned you repo from some online repository, and now you can <code class="highlighter-rouge">push</code>.  <img class="emoji" title=":leftwards_arrow_with_hook:" alt=":leftwards_arrow_with_hook:" src="https://github.githubassets.com/images/icons/emoji/unicode/21a9.png" height="20" width="20">
+</li>
+  <li>If you don’t, you are going to get message something like you first have to <code class="highlighter-rouge">pull</code> and then you are going to <code class="highlighter-rouge">push</code>. You can use <code class="highlighter-rouge">-f</code> to force the push if you want. <img class="emoji" title=":leftwards_arrow_with_hook:" alt=":leftwards_arrow_with_hook:" src="https://github.githubassets.com/images/icons/emoji/unicode/21a9.png" height="20" width="20">
+</li>
+  <li>This happens basically because when you are using BFG you are rewriting your history and in consequence you’re changing the hash of your commits, so they don’t match anymore with the commits in your online repo. In other words, you need to ditch everything you have upstream and upload your repo as it was new. For these reason you need to use <code class="highlighter-rouge">—force</code> to upload. <img class="emoji" title=":leftwards_arrow_with_hook:" alt=":leftwards_arrow_with_hook:" src="https://github.githubassets.com/images/icons/emoji/unicode/21a9.png" height="20" width="20">
+</li>
+  <li>This will have consequences if you are sharing your repo with other users or if you have merge your repo with other repos. <img class="emoji" title=":warning:" alt=":warning:" src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png" height="20" width="20">
+</li>
+</ul>
+
+<p class="notice--danger"><strong>Again<img class="emoji" title=":exclamation:" alt=":exclamation:" src="https://github.githubassets.com/images/icons/emoji/unicode/2757.png" height="20" width="20"> be careful<img class="emoji" title=":heavy_exclamation_mark:" alt=":heavy_exclamation_mark:" src="https://github.githubassets.com/images/icons/emoji/unicode/2757.png" height="20" width="20">:</strong> save a copy of your previous work till you know everything work properly. If you are working with other people in the same repo, notify them of the drastic changes before you begin to work with BGF.</p>
+
+<h2 id="bfg-when-youve-merged-with-an-upstream-repo-that-you-dont-control-or-own">BFG when you’ve merged with an upstream repo that you don’t control or own</h2>
+
+<p>I’m going to put as example what I’ve done with the repo of this blog. I didn’t have a lot of experience with Git —and I still don’t, living and learning— and I was sometimes just trying things here and here —the stuff of science, test things. The result has been a a little bit clutter Git history to what you have to add that I’ve moved my images a couple of times till I settle with a location I like. I also optimized them with an app, so the end result is, I have in my tree those images committed perhaps a minimum of couple of times, and sometimes three or four times.</p>
+
+<p>The original repo of the template has around ~70mb is size and my repo reached around ~500mb on my hard drive and around ~230mb in GitHub. I’ve made changes and added photos, but not that much to such a bit size.</p>
+
+<p>As I told you, when I started this blog, my use of Git was a little bit <em>rudimentary</em> and didn’t used branches properly, committed a lot in the master branch and other stupidities. I was putting <em>patches</em> and trying things, and I even some time, I think, I duplicated all my history and fixed it somehow… Summing up, <a href="https://www.reddit.com/r/nosleep/">no sleep stories</a>, that almost all of us have suffered when you are learning the ropes of a new tool.</p>
+
+<p>On top of all of that, I wanted to continue to receive updates of the template from his creator, so at some point I set up a branch which upstream was the master of minimal mistakes template. Usually my workflow was:</p>
+
+<p class="text-center">pull the changes → merge to my develop branch → check everything is to my liking → merge to master</p>
+
+<p>This setup gives me total control about what is updated in the template and how, while I still receive updates. It’s a little bit more manual than have the gem<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup> and overlap what I don’t like or want to customize with my code, but I can do things more granular and I can learn in the process —editing the code and see from inside how <a href="https://mmistakes.github.io/minimal-mistakes/">minimal mistakes</a>’ developer, <a href="https://mademistakes.com">Michael Rose</a>, changes things.</p>
+
+<p>So, I run BFG in this repo in a aggressive way, looking to remove everything over 500K and even deleting all the image files in the folder <code class="highlighter-rouge">/assets</code>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span>bfg <span class="nt">-b</span> 500K
+<span class="nv">$ </span>bfg <span class="nt">-D</span> <span class="s2">"*.{jpg,jpeg,png}"</span>
+<span class="nv">$ </span>bfg <span class="nt">--delete-folders</span> <span class="s2">"assets"</span>
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>The result was gorgeous. I really trimmed the size to what I have to be —around ~140mb.</p>
+
+<h3 id="the-problem">The problem</h3>
+
+<p>The problem doing this was… I unrelated the histories of my repo with the minimal mistakes repo, in other words I have to <code class="highlighter-rouge">--alow-unrelated</code> as I did the first time I wanted to merge them again<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup>. This happens basically, because as I mentioned above, BFG rewrites your history and doing so it changes the hashes of all the commits that BFG touches. If you’ve own all the branches that you’ve merged into your master, or other  branches isn’t really important, but this wan’t the case. Therefore, when I download again the minimal mistakes branch from its upstream and merge it again —after the <code class="highlighter-rouge">--allow-unrelated</code>— all the changes where reapplied and all the commits from that branch appeared duplicated in my history <img class="emoji" title=":scream:" alt=":scream:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f631.png" height="20" width="20">.</p>
+
+<h3 id="solution">Solution</h3>
+
+<p>Sorry, but there is not a correct solution here. Or at least I don’t know one —if anyone nows, please share it with me. If you change the hash of a commit in your history that it comes from a merge and you want to merge again that branch —because there is new changes— Git isn’t going to identify those two commits as the same and they are going to be “duplicated”<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup>. Take into account that when you change a commit, all the following commits change too, since the hash is generated taking into account the previous commits, so you generates a cascade effect that changes all the commits’ hashes in your history from that edited commit onwards.</p>
+
+<h3 id="what-did-i-do-clean-slate">What did I do? Clean slate</h3>
+
+<figure class="align-left">
+  <a href="https://imgs.xkcd.com/comics/git.png" title="Source: xkcd.com
+">
+  <img src="https://imgs.xkcd.com/comics/git.png" alt="Git on xkcd"></a>
+  
+    <figcaption>
+      Source: <a href="https://xkcd.com/1597/">xkcd.com</a>
+
+    </figcaption>
+  
+  </figure>
+
+<p>Since my aim here was to reduce the size of my repo, but this <em>duplication</em> didn’t satisfy me, I decided to take a drastic measure. I just recloned minimal mistakes repo on my hard drive and this time I created a new branch for my changes. I rename the original branch and rename my branch as master. Copy &amp; paste my changes from my original repo, so all my previous changes are now condensed in one commit. Them push everything to my upstream repo in GitHub. Since I have a copy of my original repo —before using BFG— I considered that as my archive and I’ve <a href="https://github.com/luispuerto/luispuerto.net.back">uploaded as so</a>.</p>
+
+<p>My repo folder weights now ~170mb with all its branches —including minimal mistakes one with all its changes— which is more than reasonable.</p>
+
+<h2 id="lesson-learned">Lesson learned</h2>
+
+<p>The lesson here is, you can do whatever you want with your repo on the condition you are the owner and the master of all the branches. If you don’t, you have to be really careful changing commits down to your tree because it’s going to be problematic.</p>
+
+<p>You also have to try to adhere to Git best practices and try to keep a working tree as clean as possible. And, of course, be mindful when you add those binary files or do not add them at all unless they are <strong>really</strong> necessary.</p>
+
+<p>There are also other options when you have to work with big files in Git, like <a href="https://git-lfs.github.com">LFS</a>, which I have yet to explore.</p>
+
+<figure class="align-center">
+  <a href="https://imgs.xkcd.com/comics/git_commit.png" title="Source: xkcd.com
+">
+  <img src="https://imgs.xkcd.com/comics/git_commit.png" alt="Git on xkcd"></a>
+  
+    <figcaption>
+      Source: <a href="https://xkcd.com/1296/">xkcd.com</a>
+
+    </figcaption>
+  
+  </figure>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>This is not really true isfyou use some Git GUIs or Diff tools that can show you the two different versions of the file, but in the end you are going to to end with the two versions stored somewhere else. Also, depending in the type of file, Git will be able to <a href="https://stackoverflow.com/questions/27268437/is-git-only-good-for-text-files-source-code#">store just the differences</a> of the file, since it’s stored in <em>text mode</em>, but best practices always tell you that you shouldn’t track those files with Git, even more if your code are the one generating the file. For example, if you have a markdown code that generates a pdf file, you store and track just the markdown not the pdf. <a href="#fnref:1" class="reversefootnote">↩</a></p>
+    </li>
+    <li id="fn:2">
+      <p>I have to confess that till really recently I was using the gem and the whole code of the template at the same time. It didn’t have any downside, but it wasn’t really smart. <a href="#fnref:2" class="reversefootnote">↩</a></p>
+    </li>
+    <li id="fn:3">
+      <p>You are probably thinking: <em>didn’t you make a branch to begin with you changes form the original template?</em>. NO! <img class="emoji" title=":scream:" alt=":scream:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f631.png" height="20" width="20"> I didn’t. I just delete all the stuff I didn’t wanted and then I begin to edit the template. After I changed to upstream repository of master to the curren repository —actually I was messing even more for sake of curiosity, but for the sake of everyone let’s keep this short— and uploaded my changes. After that, I realized I wanted updates and after more messing, so on an so forth, I ended with a branch with the upstream to minimal mistakes master. <a href="#fnref:3" class="reversefootnote">↩</a></p>
+    </li>
+    <li id="fn:4">
+      <p>They aren’t really duplicated, unless you <a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing">rebase</a>. However, when you merge, all the commits of that branch become part of your history. They are the <em>parents</em> of your following commits. If Git thinks that they aren’t the same commits as before, you’ll see them duplicated in your history <img class="emoji" title=":tada:" alt=":tada:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f389.png" height="20" width="20">. <a href="#fnref:4" class="reversefootnote">↩</a></p>
+    </li>
+  </ol>
+</div>
+
+        </div>
+        
+      </section>
+
+      <footer class="page__meta page__meta-footer">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/archive/tags/git" class="page__taxonomy-item" rel="tag">git</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/archive/tags/technology" class="page__taxonomy-item" rel="tag">technology</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/archive/categories/professional" class="page__taxonomy-item" rel="tag">Professional</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Posted:</strong> <time datetime="2018-11-05T06:30:00+00:00">Monday, 05 November 2018 06:30 UTC</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=lpuerto&amp;text=Cutting+%E2%9C%82%EF%B8%8F+down+the+size+of+your+repo%20https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F11%2F05%2Fcutting-down-the-size-of-your-repo%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F11%2F05%2Fcutting-down-the-size-of-your-repo%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F11%2F05%2Fcutting-down-the-size-of-your-repo%2F&amp;title=Cutting%20%E2%9C%82%EF%B8%8F%20down%20the%20size%20of%20your%20repo" class="btn btn--reddit" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F11%2F05%2Fcutting-down-the-size-of-your-repo%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/2018/11/01/testing-the-dosdude1-patch-to-disable-the-dGPU-on-macOS/" class="pagination--pager" title="Testing the Dosdude1 patch to disable the dGPU on macOS
+">Previous</a>
+    
+    
+      <a href="/blog/2018/11/13/the-explorer-with-the-people-mastery/" class="pagination--pager" title="The Explorer with the People Mastery
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You may also enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+      <div class="archive__item-teaser">
+          
+            <a href="/blog/2019/02/21/no-message-no-connection-in-linkedin/" rel="permalink">
+              <img src="/assets/images/blog/2019/linkedin-logo-header.png" alt="">
+            </a>
+          
+      </div>
+
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2019/02/21/no-message-no-connection-in-linkedin/" rel="permalink">No message, no connection in LinkedIn
+</a>
+      
+    </h2>
+    
+    
+      <p class="page__meta">
+        
+            <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> <time datetime="2018-11-05T06:30:00+00:00">Thursday, 21 February 2019 21:25 UTC</time>
+        
+        
+          <i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  4 minute read
+
+        
+      </p>
+    
+    <p class="archive__item-excerpt" itemprop="description">I think this is something that almost anyone with a LinkedIn account has suffered or happened to them… an invitation to connect that comes out of the blue from someone you don’t know. No message, or just the standard message, no explanation, nothing… just an invitation in your LinkedIn inbox from someone, usually with a happy face —maybe a fake ...</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+      <div class="archive__item-teaser">
+          
+            <a href="/blog/2019/02/10/discovering-hypothesis/" rel="permalink">
+              <img src="/assets/images/blog/2019/HypothesisBannerGoogleForms.png" alt="">
+            </a>
+          
+      </div>
+
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2019/02/10/discovering-hypothesis/" rel="permalink">Discovering Hypothes.is
+</a>
+      
+    </h2>
+    
+    
+      <p class="page__meta">
+        
+            <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> <time datetime="2018-11-05T06:30:00+00:00">Sunday, 10 February 2019 13:15 UTC</time>
+        
+        
+          <i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  2 minute read
+
+        
+      </p>
+    
+    <p class="archive__item-excerpt" itemprop="description">I just discovered Hypothes.is which is a service to annotate and highlight articles, posts, pdfs or whatever text you want and find all over the web and in any site. In their own words:
+
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+      <div class="archive__item-teaser">
+          
+            <a href="/blog/2019/02/03/what-Ive-been-doing-these-last-years/" rel="permalink">
+              <img src="/assets/images/blog/2018/existential-nihilism-header.jpeg" alt="">
+            </a>
+          
+      </div>
+
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2019/02/03/what-Ive-been-doing-these-last-years/" rel="permalink">What have I been doing these last years?
+</a>
+      
+    </h2>
+    
+    
+      <p class="page__meta">
+        
+            <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> <time datetime="2018-11-05T06:30:00+00:00">Sunday, 03 February 2019 19:30 UTC</time>
+        
+        
+          <i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  19 minute read
+
+        
+      </p>
+    
+    <p class="archive__item-excerpt" itemprop="description">Since some people has asked me this once in a while, I think it’s going to be a good idea to write a small0 post about what I’ve been doing these last years since I left Spain. I think I’m going to give it the shape of an informal resume / curriculum where I’m going to talk, superficially, about each of the things I’ve been doing.
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<div class="search-searchbar"></div>
+    <div class="search-hits"></div>
+</div>
+
+      </div>
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+<!-- Font Academicons -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+          <li><a href="https://github.com/luispuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Luis Puerto |
+  
+  <a href="https://github.com/luispuerto/luispuerto.net"><i class="fas fa-code" aria-hidden="true"></i> Source Code</a> | 
+  
+Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.
+</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+
+
+<!-- Including InstantSearch.js library and styling -->
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.3.3/dist/instantsearch.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.3.3/dist/instantsearch.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.3.3/dist/instantsearch-theme-algolia.min.css">
+
+<script>
+// Instanciating InstantSearch.js with Algolia credentials
+const search = instantsearch({
+  appId: 'NSAWFR2G1K',
+  apiKey: 'b63bbd39b0bf76207cf9bebdb9c2b7dd',
+  indexName: 'luispuerto-net',
+  searchParameters: {
+    restrictSearchableAttributes: [
+      'title',
+      'content'
+    ]
+  }
+});
+
+const hitTemplate = function(hit) {
+  const url = hit.url;
+  const title = hit._highlightResult.title.value;
+  const content = hit._highlightResult.html.value;
+
+  return `
+    <div class="list__item">
+      <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+        <h2 class="archive__item-title" itemprop="headline"><a href="${url}">${title}</a></h2>
+        <div class="archive__item-excerpt" itemprop="description">${content}</div>
+      </article>
+    </div>
+  `;
+}
+
+// Adding searchbar and results widgets
+search.addWidget(
+  instantsearch.widgets.searchBox({
+    container: '.search-searchbar',
+    poweredBy: true,
+    placeholder: 'Enter your search term...'
+  })
+);
+search.addWidget(
+  instantsearch.widgets.hits({
+    container: '.search-hits',
+    templates: {
+      item: hitTemplate
+    }
+  })
+);
+
+// Starting the search
+search.start();
+</script>
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1931812-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://luispuerto.net/blog/2018/11/05/cutting-down-the-size-of-your-repo/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/blog/2018/11/05/cutting-down-the-size-of-your-repo"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://luispuerto-net.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+    <script>
+//open external links in a new window
+function external_new_window() {
+    for(var c = document.getElementsByTagName("a"), a = 0;a < c.length;a++) {
+    var b = c[a];
+    b.getAttribute("href") && b.hostname !== location.hostname && (b.target = "_blank")
+    }
+}
+//open PDF links in a new window
+function pdf_new_window ()
+{
+    if (!document.getElementsByTagName) return false;
+    var links = document.getElementsByTagName("a");
+    for (var eleLink=0; eleLink < links.length; eleLink ++) {
+    if ((links[eleLink].href.indexOf('.pdf') !== -1)||(links[eleLink].href.indexOf('.doc') !== -1)||(links[eleLink].href.indexOf('.docx') !== -1)) {
+        links[eleLink].onclick =
+        function() {
+            window.open(this.href);
+            return false;
+        }
+    }
+    }
+} 
+pdf_new_window()
+external_new_window();
+</script>
+    <style>
+.videoWrapper {
+	position: relative;
+	padding-bottom: 56.333%;
+	height: 0;
+    background: black;
+}
+.videoWrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+    border: 0;
+}    
+</style>
+
+<script>
+function get_youtube_id(url) {
+    var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    return (url.match(p)) ? RegExp.$1 : false;
+}
+function vimeo_embed(url,el) {
+    var id = false;
+    $.ajax({
+      url: 'https://vimeo.com/api/oembed.json?url='+url,
+      async: true,
+      success: function(response) {
+        if(response.video_id) {
+          id = response.video_id;
+          if(url.indexOf('autoplay=1') !== -1) var autoplay=1; else var autoplay=0;
+          if(url.indexOf('loop=1') !== -1) var loop=1; else var loop=0;
+          var theInnerHTML = '<div class="videoWrapper"><iframe src="https://player.vimeo.com/video/'+id+'/?byline=0&title=0&portrait=0';
+          if(autoplay==1) theInnerHTML += '&autoplay=1';
+          if(loop==1) theInnerHTML += '&loop=1';
+          theInnerHTML += '" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>'; 
+          el.innerHTML = theInnerHTML;
+        }
+      }
+    });
+}
+function video_embed() {
+    var p = document.getElementsByTagName('p');
+    for(var i = 0; i < p.length; i++) {
+        //check if this is an external url (that starts with https:// or http://
+        if (p[i].innerHTML.indexOf("http://") == 0 ||
+            p[i].innerHTML.indexOf("https://") == 0) {
+            var youtube_id = get_youtube_id(p[i].innerHTML);
+            if(youtube_id) {
+                if(p[i].innerHTML.indexOf('autoplay=1') !== -1) var autoplay=1; else var autoplay=0;
+                if(p[i].innerHTML.indexOf('loop=1') !== -1) var loop=1; else var loop=0;
+                var theInnerHTML = '<div class="videoWrapper"><iframe width="720" height="420" src="https://www.youtube.com/embed/' + youtube_id + '?rel=0&showinfo=0';
+                if(autoplay==1) theInnerHTML += '&autoplay=1';
+                if(loop==1) theInnerHTML += '&loop=1&playlist='+youtube_id+'&version=3';
+                theInnerHTML += '" frameborder="0" allowfullscreen></iframe></div>';
+                p[i].innerHTML = theInnerHTML;
+            }
+            if(p[i].innerHTML.indexOf('vimeo.com') !== -1) {
+                //ask vimeo for the id and place the embed
+                vimeo_embed(p[i].innerHTML,p[i]);
+            }
+        }
+    }
+}
+video_embed();
+
+function mp3_embed() {
+    var p = document.getElementsByTagName('p');
+    for(var i = 0; i < p.length; i++) {
+        if(p[i].innerHTML.indexOf('.mp3') !== -1) {
+            var str = p[i].innerHTML.split('?');
+            if(str.length == 1) str[1] = '';
+            var str1 = str[1];
+            str1 = str1.replace('&','').replace('&','');
+            str1 = str1.replace('autoplay=1','').replace('autoplay=0','');
+            str1 = str1.replace('loop=1','').replace('loop=0','');
+            str1 = str1.replace('controls=0','').replace('controls=1','');
+
+            if (str[0].lastIndexOf('.mp3', str[0].length - 4) === str[0].length - 4 && str1.length == 0) {
+                if(str[1].indexOf('autoplay=1') !== -1) var autoplay=1; else var autoplay=0;
+                if(str[1].indexOf('loop=1') !== -1) var loop=1; else var loop=0;
+                if(str[1].indexOf('controls=0') !== -1) var controls=0; else var controls=1;
+                var newInnerHTML = '<audio';
+                if(autoplay==1) newInnerHTML += ' autoplay';
+                if(loop==1) newInnerHTML += ' loop';
+                if(controls==1) newInnerHTML += ' controls';
+                newInnerHTML += '><source src="'+str[0]+'" type="audio/mpeg">Your browser does not support the audio element.</audio>';
+                p[i].innerHTML = newInnerHTML;
+            }
+        }
+    }
+}
+mp3_embed();
+</script>
+  </body>
+</html>

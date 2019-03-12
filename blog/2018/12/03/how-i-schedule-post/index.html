@@ -1,0 +1,1098 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.15.2 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html -->
+
+<title>How I schedule post in Jekyll | Luis Puerto</title>
+<meta name="description" content="The other day I was explaining how I publish my blog using CI. Today I want to explain how I schedule post in my blog while still involving CI.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Luis Puerto">
+<meta property="og:title" content="How I schedule post in Jekyll">
+<meta property="og:url" content="https://luispuerto.net/blog/2018/12/03/how-i-schedule-post/">
+
+
+  <meta property="og:description" content="The other day I was explaining how I publish my blog using CI. Today I want to explain how I schedule post in my blog while still involving CI.">
+
+
+
+  <meta property="og:image" content="https://luispuerto.net/assets/images/blog/2018/jekyll+travis.png">
+
+
+
+  <meta name="twitter:site" content="@lpuerto">
+  <meta name="twitter:title" content="How I schedule post in Jekyll">
+  <meta name="twitter:description" content="The other day I was explaining how I publish my blog using CI. Today I want to explain how I schedule post in my blog while still involving CI.">
+  <meta name="twitter:url" content="https://luispuerto.net/blog/2018/12/03/how-i-schedule-post/">
+
+  
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://luispuerto.net/assets/images/blog/2018/jekyll+travis.png">
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-12-03T09:14:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://luispuerto.net/blog/2018/12/03/how-i-schedule-post/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://luispuerto.net",
+      "logo": "https://luispuerto.net/assets/images/pages/header-splash.jpg"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Luis Puerto",
+      "url": "https://luispuerto.net",
+      "sameAs": ["https://twitter.com/lpuerto","https://www.linkedin.com/in/lpuerto","https://github.com/luispuerto","https://www.flickr.com/photos/lpuerto"]
+    }
+  </script>
+
+
+
+  <meta name="google-site-verification" content="cZLLZlgNzUnRDZVt90lZpruDWIKI7ccL3GmK4E3hXKI" />
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Luis Puerto Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- Font Mr. Dafoe for Landing Page -->
+<link href="https://fonts.googleapis.com/css?family=Mr+Dafoe" rel="stylesheet">
+
+<!-- Mathjax to show equations from Latex code -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">Luis Puerto</a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/aboutme">About Me</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/resume">Résumé</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/blog">Blog</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/archive">Archive</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/contact">Contact</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="page__hero--overlay" style="
+          background-image:
+            linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+            url('/assets/images/blog/2018/jekyll+travis.png');
+          ">
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          How I schedule post in Jekyll
+
+        
+      </h1>
+      
+      <!-- 
+        <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  3 minute read
+</p>
+       -->
+      
+      
+    </div>
+  
+  
+    <span class="page__hero-caption">Jekyll and Travis logos
+</span>
+  
+</div>
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        
+        <a href="/aboutme/">
+          <img src="/assets/images/pages/20121231-035-ol.jpg" alt="Luis Puerto" itemprop="image">
+        </a>
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <a href="/aboutme/"><h3 class="author__name" itemprop="name">Luis Puerto</h3></a>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Born in Ponferrada, Spain. A Forest Engineer interested in Science and Technology. Fascinated about almost everything
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name"><img class="emoji" title=":eu:" alt=":eu:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1ea-1f1fa.png" height="20" width="20"><img class="emoji" title=":es:" alt=":es:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1ea-1f1f8.png" height="20" width="20"><img class="emoji" title=":sweden:" alt=":sweden:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1f8-1f1ea.png" height="20" width="20"><img class="emoji" title=":finland:" alt=":finland:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1eb-1f1ee.png" height="20" width="20"><img class="emoji" title=":us:" alt=":us:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f1fa-1f1f8.png" height="20" width="20"></span>
+        </li>
+      
+
+      
+
+      
+
+      
+        
+          
+            <li><a href="/aboutme/" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-user-circle" aria-hidden="true"></i> About me</a></li>
+          
+        
+          
+            <li><a href="mailto:luis@luispuerto.net" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i> Email</a></li>
+          
+        
+          
+            <li><a href="https://twitter.com/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+          
+        
+          
+            <li><a href="https://github.com/luispuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+          
+        
+          
+            <li><a href="https://instagram.com/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+          
+        
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="How I schedule post in Jekyll">
+    <meta itemprop="description" content="The other day I was explaining how I publish my blog using CI. Today I want to explain how I schedule post in my blog while still involving CI.">
+    <meta itemprop="datePublished" content="Monday, 03 December 2018 09:14 UTC">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      
+        <p class="page__meta page__reading_time">
+          
+          
+              <strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Posted:</strong> <time datetime="2018-12-03T09:14:00+00:00">Monday, 03 December 2018 09:14 UTC</time>
+          
+          
+        
+          <strong><i class="far fa-clock" aria-hidden="true"></i></strong> 
+
+
+
+
+  3 minute read
+
+        
+        </p>
+      
+
+        
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              
+              <ul class="toc__menu back__top"><li><a href="#">Back to Top</a></li></ul>
+              
+              <ul class="toc__menu">
+  <li><a href="#what-is-cron">What is cron?</a></li>
+  <li><a href="#how-do-you-access-to-travis-api">How do you access to Travis API</a></li>
+  <li><a href="#running-jobs-in-cron">Running jobs in cron</a></li>
+  <li><a href="#when-im-out-home">When I’m out home</a></li>
+  <li><a href="#other-options">Other options</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <div class="post__content">
+          <p>The <a href="/blog/2018/11/26/how-i-publish-my-blog-ci/">other day</a> I was explaining how I publish my blog using CI. Today I want to explain how I schedule post in my blog while still involving CI.</p>
+
+<p>You know that <a href="/archive/tags/jekyll">Jekyll</a> is great, but sometimes it’s lacking some features, like be able to schedule post. I don’t think it’s a dealbreaker, but it’s definitely helpful. Sometimes I write a couple of post at once, just because they are part of a series, or a single post that is split because it’s really big, or just because I like to… However, I don’t want to publish those post right away so I would like to schedule them.</p>
+
+<p>With Jekyll you can’t schedule post because when you build your site, it’s static —isn’t this the whole point of having a static site?— so unless you build your site again it isn’t going to change. So, even if you set a date in the future in the yaml front-matter nothing is going to happen unless you rebuild the site on that date or after that date. Other option is to build with with the <code class="highlighter-rouge">--future</code> tag, but then those post will show when you build which it’s going to be probably too early.</p>
+
+<p>There are several solutions out there to schedule, like <a href="https://serverless.com/blog/static-site-post-scheduler/">this</a>, this <a href="https://forestry.io/blog/automatically-publish-scheduled-posts-for-static-site/#option-2-using-a-lambda-task-to-trigger-your-build">other</a> or that <a href="http://brettterpstra.com/2013/01/17/scheduling-posts-with-jekyll/">one</a>. However, most of those are too complicate for my taste, or you need to have <em>something</em> on AWS, etc.</p>
+
+<p>Since I have a <a href="/archive/tags/raspberry-pi">Raspberry pi</a> at home, it’s connected to internet all the time and all the time it’s on, I can schedule <a href="https://en.wikipedia.org/wiki/Cron">cron jobs</a> on it to run scripts. On the other side, you can trigger your site rebuild on Travis using <a href="https://docs.travis-ci.com/user/triggering-builds/">their API</a>. I’m already doing that with a cron job to rebuild my site everyday at 8 in the morning. Cron it’s really handy and allow you a lot of different <a href="https://crontab.guru">setups</a>. For instance, you can run a script every minute, every six hours, once a week, once a month, a year… etc.</p>
+
+<h2 id="what-is-cron">What is cron?</h2>
+
+<p>Just in case you don’t know or you are so lazy that you can’t check the <a href="https://en.wikipedia.org/wiki/Cron">Wikipedia</a>, I’m going to sum up for you what is cron.</p>
+
+<p>Cron is just a scheduler for jobs that most of UNIX machines —linux and mac for example— have. It’s really basic, but really handy if you know more or less how to program it. I recommend you to learn how to use it because can make your life quite easier.</p>
+
+<h2 id="how-do-you-access-to-travis-api">How do you access to Travis API</h2>
+
+<p>On <a href="https://docs.travis-ci.com/user/triggering-builds/">travis documentation</a> you can find more options, but this is the basic script you need to run on cron —or on your terminal— if you want to access Travis API.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td>
+<td class="rouge-code"><pre><span class="c">#!/usr/bin/env bash</span>
+<span class="nv">body</span><span class="o">=</span><span class="s1">'{
+"request": {
+"branch":"master"
+}}'</span>
+
+curl <span class="nt">-s</span> <span class="nt">-X</span> POST <span class="se">\</span>
+   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+   <span class="nt">-H</span> <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+   <span class="nt">-H</span> <span class="s2">"Travis-API-Version: 3"</span> <span class="se">\</span>
+   <span class="nt">-H</span> <span class="s2">"Authorization: token YOUR-TOKEN"</span> <span class="se">\</span>
+   <span class="nt">-d</span> <span class="s2">"</span><span class="nv">$body</span><span class="s2">"</span> <span class="se">\</span>
+   https://api.travis-ci.com/repo/your-github-username%2Fyour-repo-name/requests
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>You can get your Travis token on your <a href="https://travis-ci.com/account/preferences">preferences page</a> on Travis page. You also need to set <code class="highlighter-rouge">your-github-username</code> and <code class="highlighter-rouge">your-repo-name</code> in the url. Remember you also need to make your script executable.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">chmod</span> +x path/to/your/script.sh
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<h2 id="running-jobs-in-cron">Running jobs in cron</h2>
+
+<p>If you want to add jobs to cron you just need run in the terminal</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td>
+<td class="rouge-code"><pre><span class="nv">$ </span>crontab <span class="nt">-e</span>
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>and you default text editor will open. There you can add jobs taking into account the following <a href="https://en.wikipedia.org/wiki/Cron#Overview">rules</a>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td>
+<td class="rouge-code"><pre>┌───────────── minute (0 - 59)
+│ ┌───────────── hour (0 - 23)
+│ │ ┌───────────── day of the month (1 - 31)
+│ │ │ ┌───────────── month (1 - 12)
+│ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday;
+│ │ │ │ │                                   7 is also Sunday on some systems)
+│ │ │ │ │
+│ │ │ │ │
+* * * * * command to execute # You can put a comment here too. 
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>In <code class="highlighter-rouge">command to execute</code> is where you put the route to your script.</p>
+
+<p>For example, if I wanted to run my building script on Nov 26th at 6.07 am I have to set up the following line in cron:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr>
+<td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td>
+<td class="rouge-code"><pre>7 6 26 11 * /root/scripts/cron-builds-jekyll/luispuerto-net.sh
+</pre></td>
+</tr></tbody></table></code></pre></div></div>
+
+<p>You can set up as much lines you want in cron, so you can set up multiple post at once for different dates and so.</p>
+
+<p class="notice--warning"><strong>Note:</strong> Please mind in what time zone is your blog and in what time zone is your Pi —or whatever you are using to schedule post— because if they aren’t in the same time zone you need to take into account when you schedule your cron job. For example, I have my blog in UTC but my Pi is with me in Finland —EET— so I need to subtract two hours in winter and three in summer —mind the DST too if <a href="https://www.timeanddate.com/news/time/europe-dst-end-2018.html">it’s still happening</a>.</p>
+
+<h2 id="when-im-out-home">When I’m out home</h2>
+
+<p>When I’m out of home and I still want to program my post I still use my raspberry at home, since I can connect to it using a <a href="http://www.pivpn.io">VPN connection</a> I have set it up on the Raspberry. I recommend you to set it up a VPN if you haven’t done it yet.</p>
+
+<h2 id="other-options">Other options</h2>
+
+<p>If you don’t have a Raspberry, there are other options so you can run cron jobs <a href="https://duckduckgo.com/?q=cron+jobs+online&amp;t=osx&amp;ia=web">online</a>. However, I haven’t tried any of those solutions and I don’t know how well suited are for running scripts.</p>
+
+        </div>
+        
+      </section>
+
+      <footer class="page__meta page__meta-footer">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/archive/tags/blogging" class="page__taxonomy-item" rel="tag">blogging</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/archive/tags/ci" class="page__taxonomy-item" rel="tag">CI</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/archive/tags/jekyll" class="page__taxonomy-item" rel="tag">jekyll</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/archive/tags/raspberry-pi" class="page__taxonomy-item" rel="tag">raspberry pi</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/archive/tags/travis" class="page__taxonomy-item" rel="tag">travis</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/archive/categories/personal" class="page__taxonomy-item" rel="tag">Personal</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/archive/categories/technology" class="page__taxonomy-item" rel="tag">Technology</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Posted:</strong> <time datetime="2018-12-03T09:14:00+00:00">Monday, 03 December 2018 09:14 UTC</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=lpuerto&amp;text=How+I+schedule+post+in+Jekyll%20https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F12%2F03%2Fhow-i-schedule-post%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F12%2F03%2Fhow-i-schedule-post%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F12%2F03%2Fhow-i-schedule-post%2F&amp;title=How%20I%20schedule%20post%20in%20Jekyll" class="btn btn--reddit" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fluispuerto.net%2Fblog%2F2018%2F12%2F03%2Fhow-i-schedule-post%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/2018/11/26/how-i-publish-my-blog-ci/" class="pagination--pager" title="How I publish my blog: Using Continuous Integration with Jekyll
+">Previous</a>
+    
+    
+      <a href="/blog/2018/12/31/happy-new-year-12019/" class="pagination--pager" title="Happy New Year 12019 🎊
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You may also enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+      <div class="archive__item-teaser">
+          
+            <a href="/blog/2019/02/21/no-message-no-connection-in-linkedin/" rel="permalink">
+              <img src="/assets/images/blog/2019/linkedin-logo-header.png" alt="">
+            </a>
+          
+      </div>
+
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2019/02/21/no-message-no-connection-in-linkedin/" rel="permalink">No message, no connection in LinkedIn
+</a>
+      
+    </h2>
+    
+    
+      <p class="page__meta">
+        
+            <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> <time datetime="2018-12-03T09:14:00+00:00">Thursday, 21 February 2019 21:25 UTC</time>
+        
+        
+          <i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  4 minute read
+
+        
+      </p>
+    
+    <p class="archive__item-excerpt" itemprop="description">I think this is something that almost anyone with a LinkedIn account has suffered or happened to them… an invitation to connect that comes out of the blue from someone you don’t know. No message, or just the standard message, no explanation, nothing… just an invitation in your LinkedIn inbox from someone, usually with a happy face —maybe a fake ...</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+      <div class="archive__item-teaser">
+          
+            <a href="/blog/2019/02/10/discovering-hypothesis/" rel="permalink">
+              <img src="/assets/images/blog/2019/HypothesisBannerGoogleForms.png" alt="">
+            </a>
+          
+      </div>
+
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2019/02/10/discovering-hypothesis/" rel="permalink">Discovering Hypothes.is
+</a>
+      
+    </h2>
+    
+    
+      <p class="page__meta">
+        
+            <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> <time datetime="2018-12-03T09:14:00+00:00">Sunday, 10 February 2019 13:15 UTC</time>
+        
+        
+          <i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  2 minute read
+
+        
+      </p>
+    
+    <p class="archive__item-excerpt" itemprop="description">I just discovered Hypothes.is which is a service to annotate and highlight articles, posts, pdfs or whatever text you want and find all over the web and in any site. In their own words:
+
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+      <div class="archive__item-teaser">
+          
+            <a href="/blog/2019/02/03/what-Ive-been-doing-these-last-years/" rel="permalink">
+              <img src="/assets/images/blog/2018/existential-nihilism-header.jpeg" alt="">
+            </a>
+          
+      </div>
+
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2019/02/03/what-Ive-been-doing-these-last-years/" rel="permalink">What have I been doing these last years?
+</a>
+      
+    </h2>
+    
+    
+      <p class="page__meta">
+        
+            <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> <time datetime="2018-12-03T09:14:00+00:00">Sunday, 03 February 2019 19:30 UTC</time>
+        
+        
+          <i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  19 minute read
+
+        
+      </p>
+    
+    <p class="archive__item-excerpt" itemprop="description">Since some people has asked me this once in a while, I think it’s going to be a good idea to write a small0 post about what I’ve been doing these last years since I left Spain. I think I’m going to give it the shape of an informal resume / curriculum where I’m going to talk, superficially, about each of the things I’ve been doing.
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<div class="search-searchbar"></div>
+    <div class="search-hits"></div>
+</div>
+
+      </div>
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+<!-- Font Academicons -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/lpuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+          <li><a href="https://github.com/luispuerto" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Luis Puerto |
+  
+  <a href="https://github.com/luispuerto/luispuerto.net"><i class="fas fa-code" aria-hidden="true"></i> Source Code</a> | 
+  
+Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.
+</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+
+
+<!-- Including InstantSearch.js library and styling -->
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.3.3/dist/instantsearch.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.3.3/dist/instantsearch.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.3.3/dist/instantsearch-theme-algolia.min.css">
+
+<script>
+// Instanciating InstantSearch.js with Algolia credentials
+const search = instantsearch({
+  appId: 'NSAWFR2G1K',
+  apiKey: 'b63bbd39b0bf76207cf9bebdb9c2b7dd',
+  indexName: 'luispuerto-net',
+  searchParameters: {
+    restrictSearchableAttributes: [
+      'title',
+      'content'
+    ]
+  }
+});
+
+const hitTemplate = function(hit) {
+  const url = hit.url;
+  const title = hit._highlightResult.title.value;
+  const content = hit._highlightResult.html.value;
+
+  return `
+    <div class="list__item">
+      <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+        <h2 class="archive__item-title" itemprop="headline"><a href="${url}">${title}</a></h2>
+        <div class="archive__item-excerpt" itemprop="description">${content}</div>
+      </article>
+    </div>
+  `;
+}
+
+// Adding searchbar and results widgets
+search.addWidget(
+  instantsearch.widgets.searchBox({
+    container: '.search-searchbar',
+    poweredBy: true,
+    placeholder: 'Enter your search term...'
+  })
+);
+search.addWidget(
+  instantsearch.widgets.hits({
+    container: '.search-hits',
+    templates: {
+      item: hitTemplate
+    }
+  })
+);
+
+// Starting the search
+search.start();
+</script>
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1931812-1']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://luispuerto.net/blog/2018/12/03/how-i-schedule-post/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/blog/2018/12/03/how-i-schedule-post"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://luispuerto-net.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+    <script>
+//open external links in a new window
+function external_new_window() {
+    for(var c = document.getElementsByTagName("a"), a = 0;a < c.length;a++) {
+    var b = c[a];
+    b.getAttribute("href") && b.hostname !== location.hostname && (b.target = "_blank")
+    }
+}
+//open PDF links in a new window
+function pdf_new_window ()
+{
+    if (!document.getElementsByTagName) return false;
+    var links = document.getElementsByTagName("a");
+    for (var eleLink=0; eleLink < links.length; eleLink ++) {
+    if ((links[eleLink].href.indexOf('.pdf') !== -1)||(links[eleLink].href.indexOf('.doc') !== -1)||(links[eleLink].href.indexOf('.docx') !== -1)) {
+        links[eleLink].onclick =
+        function() {
+            window.open(this.href);
+            return false;
+        }
+    }
+    }
+} 
+pdf_new_window()
+external_new_window();
+</script>
+    <style>
+.videoWrapper {
+	position: relative;
+	padding-bottom: 56.333%;
+	height: 0;
+    background: black;
+}
+.videoWrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+    border: 0;
+}    
+</style>
+
+<script>
+function get_youtube_id(url) {
+    var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    return (url.match(p)) ? RegExp.$1 : false;
+}
+function vimeo_embed(url,el) {
+    var id = false;
+    $.ajax({
+      url: 'https://vimeo.com/api/oembed.json?url='+url,
+      async: true,
+      success: function(response) {
+        if(response.video_id) {
+          id = response.video_id;
+          if(url.indexOf('autoplay=1') !== -1) var autoplay=1; else var autoplay=0;
+          if(url.indexOf('loop=1') !== -1) var loop=1; else var loop=0;
+          var theInnerHTML = '<div class="videoWrapper"><iframe src="https://player.vimeo.com/video/'+id+'/?byline=0&title=0&portrait=0';
+          if(autoplay==1) theInnerHTML += '&autoplay=1';
+          if(loop==1) theInnerHTML += '&loop=1';
+          theInnerHTML += '" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>'; 
+          el.innerHTML = theInnerHTML;
+        }
+      }
+    });
+}
+function video_embed() {
+    var p = document.getElementsByTagName('p');
+    for(var i = 0; i < p.length; i++) {
+        //check if this is an external url (that starts with https:// or http://
+        if (p[i].innerHTML.indexOf("http://") == 0 ||
+            p[i].innerHTML.indexOf("https://") == 0) {
+            var youtube_id = get_youtube_id(p[i].innerHTML);
+            if(youtube_id) {
+                if(p[i].innerHTML.indexOf('autoplay=1') !== -1) var autoplay=1; else var autoplay=0;
+                if(p[i].innerHTML.indexOf('loop=1') !== -1) var loop=1; else var loop=0;
+                var theInnerHTML = '<div class="videoWrapper"><iframe width="720" height="420" src="https://www.youtube.com/embed/' + youtube_id + '?rel=0&showinfo=0';
+                if(autoplay==1) theInnerHTML += '&autoplay=1';
+                if(loop==1) theInnerHTML += '&loop=1&playlist='+youtube_id+'&version=3';
+                theInnerHTML += '" frameborder="0" allowfullscreen></iframe></div>';
+                p[i].innerHTML = theInnerHTML;
+            }
+            if(p[i].innerHTML.indexOf('vimeo.com') !== -1) {
+                //ask vimeo for the id and place the embed
+                vimeo_embed(p[i].innerHTML,p[i]);
+            }
+        }
+    }
+}
+video_embed();
+
+function mp3_embed() {
+    var p = document.getElementsByTagName('p');
+    for(var i = 0; i < p.length; i++) {
+        if(p[i].innerHTML.indexOf('.mp3') !== -1) {
+            var str = p[i].innerHTML.split('?');
+            if(str.length == 1) str[1] = '';
+            var str1 = str[1];
+            str1 = str1.replace('&','').replace('&','');
+            str1 = str1.replace('autoplay=1','').replace('autoplay=0','');
+            str1 = str1.replace('loop=1','').replace('loop=0','');
+            str1 = str1.replace('controls=0','').replace('controls=1','');
+
+            if (str[0].lastIndexOf('.mp3', str[0].length - 4) === str[0].length - 4 && str1.length == 0) {
+                if(str[1].indexOf('autoplay=1') !== -1) var autoplay=1; else var autoplay=0;
+                if(str[1].indexOf('loop=1') !== -1) var loop=1; else var loop=0;
+                if(str[1].indexOf('controls=0') !== -1) var controls=0; else var controls=1;
+                var newInnerHTML = '<audio';
+                if(autoplay==1) newInnerHTML += ' autoplay';
+                if(loop==1) newInnerHTML += ' loop';
+                if(controls==1) newInnerHTML += ' controls';
+                newInnerHTML += '><source src="'+str[0]+'" type="audio/mpeg">Your browser does not support the audio element.</audio>';
+                p[i].innerHTML = newInnerHTML;
+            }
+        }
+    }
+}
+mp3_embed();
+</script>
+  </body>
+</html>
